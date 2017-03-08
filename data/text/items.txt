@@ -1,0 +1,90 @@
+//to ignore [] formatting, otherwise just not having brackets is fine
+//["name" type=item_type int=int_amount mp5=mp5_amount hsp=hsp_amount]
+//["big_sword" type=weapon int=5 mp5=3]
+not neccessary to write stats that are zero
+duplicates will be ignored, last one will be recorded
+types:(case insensitive)
+Head
+Neck
+Shoulder
+Back
+Wrist
+Hands
+Waist
+Legs
+Feet
+Finger
+Trinket
+Weapon
+Offhand
+
+stats:
+int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from use)
+
+
+OPTIONS:
+record number = 3   how many top results are recorded
+base mana = 2640
+base int = 85
+buff int = 50 any int from buffs/consumables
+buff mp5 = 16 any mp5 from consumables
+talent crit = 5
+heal amount = 375   chain heal tooltip avg
+heal cost = 247      after talents but without items
+cast delay = 2
+mana potion = 1800  potion used once when reaching 0 mana, put 0 if you're a slacker
+
+Head:
+["Crown of the Penitent" type=Head int=20 mp5=6]
+["Tribal War Feathers" type=Head int=15 hsp=33]
+["Dragonskin Cowl" type=Head int=15 hsp=18]
+["Starfire Tiara" type=Head int=28]
+
+Neck:
+["Gemshard Heart" type=Neck int=10]
+
+Shoulder:
+["Living Shoulders" type=Shoulder hsp=29]
+["Elements" type=Shoulder int=15]
+
+Back:
+["Raincaster Drape" type=Back hsp=20]
+["Archivist's Cape of Spirit" type=Back mp5=4]
+
+Chest:
+["Magister's Robe" type=Chest int=31]
+["Red Dragonscale Breastplate" type=Chest hsp=59]
+
+Wrists:
+["Bindings of Elements" type=Wrist int=10]
+["Loomguard Armbraces" type=Wrist int=7 hsp=30]
+
+Weapon/Offhand:
+["Hammer of Grace" type=Weapon hsp=29]
+["Spirit of Aquementas" type=Offhand -cost=25]
+["Gizlock's Hypertech Buckler" type=Offhand int=10 mp5=4]
+
+Hands:
+["Hands of the Exalted Herald" type=Hands int=13 hsp=30]
+["Ghostweave Gloves" type=Hands int=8 mp5=6]
+
+Belt:
+["Ghostweave Belt" type=Waist int=8 mp5=6]
+
+Legs:
+["Living Pants" type=Legs hsp=24]
+
+Feet:
+["Dragonrider Boots" type=Feet int=16]
+["Verdant Footpads" type=Feet hsp=33]
+
+Rings:
+["Fordring's Seal" type=Finger hsp=33]
+["Maiden's Circle" type=Finger int=7 hsp=9]
+["Green ring" type=Finger int=10]
+
+Trinkets:
+["Shard of Afrasa" type=Trinket mp5=5]
+["Second Wind" type=Trinket +mana=300 hsp=20]
+["Briarwood Reed" type=Trinket hsp=22]
+
