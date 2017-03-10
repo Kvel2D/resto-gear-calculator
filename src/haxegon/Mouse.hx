@@ -9,7 +9,7 @@ import openfl.Lib;
 
 class Mouse {
 	// right click menu toggle for flash
-	private static var flash_menu_on = true;
+	private static var flash_menu_on = false;
 
 	public static var x:Int;
 	public static var y:Int;

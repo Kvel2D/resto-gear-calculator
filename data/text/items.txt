@@ -24,20 +24,24 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3   how many top results are recorded
+time limit = 0    put 0 to turn off
+tides = 2  number of tide totems to drop(1 for 3min fight, 2 for 4+min)
 base mana = 2640
 base int = 85
 buff int = 50 any int from buffs/consumables
 buff mp5 = 16 any mp5 from consumables
 talent crit = 5
-heal amount = 375   chain heal tooltip avg
-heal cost = 247      after talents but without items
+heal amount = 375   average of numbers in tooltip
+heal cost = 247      after talents but without item effects
+heal is chained = 1   if 1, apply 75% bonus from the chain
+cast time = 3       no floating points, sorry!
 cast delay = 2
 mana potion = 1800  potion used once when reaching 0 mana, put 0 if you're a slacker
 
 Head:
 ["Crown of the Penitent" type=Head int=20 mp5=6]
-["Tribal War Feathers" type=Head int=15 hsp=33]
-["Dragonskin Cowl" type=Head int=15 hsp=18]
+//["Tribal War Feathers" type=Head int=15 hsp=33]
+//["Dragonskin Cowl" type=Head int=15 hsp=18]
 ["Starfire Tiara" type=Head int=28]
 
 Neck:
@@ -45,7 +49,6 @@ Neck:
 
 Shoulder:
 ["Living Shoulders" type=Shoulder hsp=29]
-["Elements" type=Shoulder int=15]
 
 Back:
 ["Raincaster Drape" type=Back hsp=20]

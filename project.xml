@@ -9,7 +9,7 @@
 	<app main="haxegon.Load" path="bin" file="game" />
    
 	<window
-      width="350" height="200" unless="mobile"
+      width="1000" height="1000" unless="mobile"
    	></window>
    
 	<window

@@ -12,10 +12,12 @@ class Item {
 
 @:publicFields
 class Main {
-    static inline var screen_width = 310;
-    static inline var screen_height = 200;
     static inline var DEBUG = false;
+    static inline var AUTO_EXIT = false;
 
+    static inline var screen_width = 1000;
+    static inline var screen_height = 1000;
+    
     var types = [
     "head",
     "neck",
@@ -61,7 +63,13 @@ class Main {
     var top_perm: Vector<Array<Int>>;
     var top_healed: Vector<Int>;
     var top_t: Vector<Int>;
+    var top_stats: Vector<String>;
     var record_number = 0;
+
+    var output_array = new Array<String>();
+    var output_colors = new Array<Int>();
+    var output_string = "";
+    var scroll_index = 0;
 
     function new() {
         Gfx.resize_screen(screen_width, screen_height);
@@ -99,6 +107,11 @@ class Main {
             find_option('cast delay');
             find_option('mana potion');
             find_option('record number');
+            find_option('cast time');
+            find_option('tides');
+            find_option('heal is chained');
+            find_option('time limit');
+            find_option('tides');
 
 
             // item lines must have [ and ]
@@ -159,6 +172,7 @@ class Main {
         top_perm = new Vector<Array<Int>>(record_number);
         top_healed = new Vector<Int>(record_number);
         top_t = new Vector<Int>(record_number);
+        top_stats = new Vector<String>(record_number);
         for (i in 0...top_perm.length) {
             top_perm[i] = new Array<Int>();
             top_healed[i] = 0;
@@ -223,6 +237,8 @@ class Main {
                         while (j > i) {
                             top_healed[j] = top_healed[j - 1];
                             top_perm[j] = top_perm[j - 1];
+                            top_t[j] = top_t[j - 1];
+                            top_stats[j] = top_stats[j - 1];
                             j--;
                         }
                         top_healed[i] = result_healed;
@@ -232,6 +248,7 @@ class Main {
                             perm.push(permutation_indices[type]);
                         }
                         top_perm[i] = perm;
+                        top_stats[i] = 'mana=${stats_mana} mp5=${stats_mp5} hsp=${stats_hsp} -cost=${stats_cost}';
                         break;
                     }
                 }
@@ -270,32 +287,52 @@ class Main {
             }
         }
 
+        function output(line) {
+            output_array.push(line);
+            output_string += '\n' + line;
+        }
+
         for (j in 0...record_number) {
             if (top_healed[j] == 0) {
                 break;
             }
-            trace("-----------");
-            trace('# ${j+1}');
-            trace('Total healed: ${top_healed[j]}');
-            trace('Time until 0mp: ${top_t[j]}');
+            output("-----------");
+            output('# ${j+1}');
+            output('Stats: ${top_stats[j]}');
+            output('Total healed: ${top_healed[j]}');
+            output('Time until 0mp: ${top_t[j]}');
+
+            for (i in 0...5) {
+                output_colors.push(Col.WHITE);
+            }
             for (i in 0...types.length) {
                 var type = types[i];
                 var item = items[type][top_perm[j][i]];
-                trace('${type}: ${item.name}');
+                output('${type}: ${item.name}');
+                if (j > 0 && top_perm[j][i] != top_perm[0][i]) {
+                    output_colors.push(Col.GREEN);
+                } else {
+                    output_colors.push(Col.WHITE);
+                }
             }
         }
+
+        trace(output_string);
     }
 
     static var tide_cost = 54;
     static var spring_cost = 90;
 
-    static var manatide_timer_max = 3 * 60;
     static var manatide_length = 30;
-    static var manatide_time_1 = 60;
-    static var manatide_time_2 = 120;
+    static var manatide_interval_timer_max = 60;
     static var manatide_tick = 290;
     static var manaspring_tick = 12;
-    static var cast_time = 3;
+
+    static var stats_mana = 0;
+    static var stats_mp5 = 0;
+    static var stats_hsp = 0;
+    static var stats_cost = 0;
+
     var t = 0;
     var healed = 0;
     function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease) {
@@ -306,13 +343,29 @@ class Main {
         var mana = get_option('base mana') + Std.int(int * 15.75);
         var cast_timer = 0;
         var manatide_timer = 0;
+        var manatide_interval_timer = manatide_interval_timer_max;
         var manatide_on = false;
         var manaspring_on = true;
         var crit = get_option('talent crit') + Std.int(int / 60);
         var heal_amount = get_option('heal amount');
         var heal_cost = get_option('heal cost');
+        var cast_time = get_option('cast time');
         var cast_delay = get_option('cast delay');
+        var tide_amount = get_option('tides');
         var used_potion = false;
+        var chain_heal = get_option('heal is chained') == 1;
+        var time_limit = get_option('time limit');
+        var tides = get_option('tides');
+        if (time_limit <= 0) {
+            time_limit = 60 * 60;
+        }
+
+        var healed_this_cast = 0;
+
+        stats_mana = mana;
+        stats_mp5 = mp5;
+        stats_hsp = hsp;
+        stats_cost = cost_decrease;
 
         while (true) {
             t++;
@@ -326,12 +379,17 @@ class Main {
                     manaspring_on = true;
                 }
             } else {
-                if (t == manatide_time_1 || t == manatide_time_2) {
-                    manatide_on = true;
-                    manaspring_on = false;
-                    manatide_timer = manatide_length;
-                    mana -= tide_cost;
-                    mana += cost_decrease;
+                if (tide_amount > 0) {
+                    manatide_interval_timer--;
+                    if (manatide_interval_timer <= 0) {
+                        manatide_interval_timer = manatide_interval_timer_max;
+                        tide_amount--;
+                        manatide_on = true;
+                        manaspring_on = false;
+                        manatide_timer = manatide_length;
+                        mana -= tide_cost;
+                        mana += cost_decrease;
+                    }
                 }
             }
 
@@ -342,7 +400,11 @@ class Main {
                 cast_timer = cast_time + cast_delay;
                 // extra 75% from 2 chain heal jumps
                 // n% casts will be critical and heal 150% the regular amount
-                healed += Std.int((heal_amount + hsp) * 1.75 * (1 + crit / 100 * 0.5));
+                healed_this_cast = Std.int((heal_amount + hsp) * (1 + crit / 100 * 0.5));
+                if (chain_heal) {
+                    healed_this_cast = Std.int(healed_this_cast * 1.75);
+                }
+                healed += healed_this_cast;
             }
 
             // Apply mp5
@@ -366,11 +428,15 @@ class Main {
             }
 
 
-            // hard cap at 10min
-            if (t >= 10 * 60) {
+            // hard cap at 20min if something goes wrong
+            if (t >= 20 * 60) {
                 return;
             }
-
+            // time limit cap
+            if (t > time_limit) {
+                return;
+            }
+            // mana cap
             if (mana <= 0) {
                 if (!used_potion) {
                     mana += get_option('mana potion');
@@ -383,19 +449,40 @@ class Main {
         }
     }
 
-
-    //delay between casts
-    //consumables(oil, nightfin, flasks)
-    //buffs
-    //manaspring totem on/off
-    //cast rotation(ch1, ch1/ch1/ch3, etc.)
-    //crits(int increases crit a bit)
+    // make it work in cpp
+    // load file from sys
+    // check file loading from html5?
 
     var exit_timer = 60;
     function update() {
-        exit_timer--;
-        if (exit_timer <= 0) {
-            System.exit(0);
+        if (AUTO_EXIT) {
+            exit_timer--;
+            if (exit_timer <= 0) {
+                System.exit(0);
+            }
         }
+
+        if (Input.pressed(Key.UP)) {
+            scroll_index--;
+            if (scroll_index < 0) {
+                scroll_index = 0;
+            }
+        }
+        if (Input.pressed(Key.DOWN)) {
+            scroll_index++;
+            if (scroll_index > output_array.length - 20) {
+                scroll_index = output_array.length - 20;
+            }
+        }
+
+        var y = 0.0;
+        for (i in scroll_index...scroll_index + 50) {
+            Text.display(0, y, output_array[i], output_colors[i]);
+            y += Text.height();
+            if (y > screen_height) {
+                break;
+            }
+        }
+
     }
 }
