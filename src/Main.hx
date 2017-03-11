@@ -1,6 +1,10 @@
 import haxegon.*;
 import haxe.ds.Vector;
 import flash.system.System;
+#if cpp
+import sys.io.File;
+import sys.FileSystem;
+#end
 
 @:publicFields
 class Item {
@@ -74,13 +78,29 @@ class Main {
     function new() {
         Gfx.resize_screen(screen_width, screen_height);
 
+
+        var items_file = Data.load_text("items");
+
+        calculate(items_file);
+    }
+
+
+    function calculate(items_file: Array<String>) {
+
+        options = new Map<String, Int>();
+        items = new Map<String, Array<Item>>();
+        permutation_indices = new Map<String, Int>();
+        permutation_indices_max = new Map<String, Int>();
+
         for (type in types) {
             items[type] = new Array<Item>();
             permutation_indices[type] = 0;
         }
 
-        // Load items
-        var items_file = Data.load_text("items");
+        output_array = new Array<String>();
+        output_colors = new Array<Int>();
+
+
         for (line in items_file) {
             // skip comments
             if (line.indexOf('//') != -1) {
@@ -316,7 +336,6 @@ class Main {
                 }
             }
         }
-
         trace(output_string);
     }
 
@@ -451,7 +470,6 @@ class Main {
 
     // make it work in cpp
     // load file from sys
-    // check file loading from html5?
 
     var exit_timer = 60;
     function update() {
@@ -475,7 +493,7 @@ class Main {
             }
         }
 
-        var y = 0.0;
+        var y = 50.0;
         for (i in scroll_index...scroll_index + 50) {
             Text.display(0, y, output_array[i], output_colors[i]);
             y += Text.height();
@@ -484,5 +502,6 @@ class Main {
             }
         }
 
+        GUI.text_button(0, 0, "Recalculate", function() { var items_file = Data.load_text("items"); calculate(items_file); });
     }
 }

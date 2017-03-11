@@ -89,5 +89,5 @@ Rings:
 Trinkets:
 ["Shard of Afrasa" type=Trinket mp5=5]
 ["Second Wind" type=Trinket +mana=300 hsp=20]
-["Briarwood Reed" type=Trinket hsp=22]
+//["Briarwood Reed" type=Trinket hsp=22]
 

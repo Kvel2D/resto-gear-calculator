@@ -7,7 +7,7 @@ using haxegon.MathExtensions;
 class GUI {
 	static var x: Float = 0;
 	static var y: Float = 0;
-	static var fslider_cache = {hash: "", dragged: false};
+	static var slider_cache = {hash: "", dragged: false};
 
 	static var button_off_color = Col.GRAY;
 	static var button_on_color = Col.PINK;
