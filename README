@@ -1,7 +1,0 @@
-Gear calculator for vanilla restoration shaman.
-Made specifically for healing 5min+ raid boss fights, with chain heal as the primary spell. 
-Goes through all the permutations of your gear and prints permutations with top healed amounts.
-
-Type in your available gear in data/text/items.txt
-items.txt also has options
-
