@@ -7,5 +7,5 @@ Type in available gear in data/text/items.txt
 items.txt also has options
 
 ![alt text](https://github.com/Kvel2D/resto-gear-calculator/raw/master/screen1.png "Screen 1")
-![alt text](https://github.com/Kvel2D/resto-gear-calculator/raw/master/screen1.png "Screen 2")
+![alt text](https://github.com/Kvel2D/resto-gear-calculator/raw/master/screen2.png "Screen 2")
 
