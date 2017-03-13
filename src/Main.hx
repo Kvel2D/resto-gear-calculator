@@ -47,6 +47,7 @@ class Main {
     "hsp",
     "+mana",
     "-cost",
+    "+crit",
     ];
 
     var options = new Map<String, Int>();
@@ -223,6 +224,7 @@ class Main {
             var mp5 = 0 + 8 + 8;//oil and nightfin
             var cost_decrease = 0;
             var base_int = get_option('base int');
+            var bonus_crit = 0;
 
             for (type in types) {
                 var item = items[type][permutation_indices[type]];
@@ -231,10 +233,11 @@ class Main {
                 mp5 += item.stats["mp5"];
                 hsp += item.stats["hsp"];
                 cost_decrease += item.stats["-cost"];
+                bonus_crit += item.stats["+crit"];
             }
 
             // Simulate
-            simulate(added_mana, base_int, int, mp5, hsp, cost_decrease);
+            simulate(added_mana, base_int, int, mp5, hsp, cost_decrease, bonus_crit);
             var result_healed = healed;
             var result_t = t;
 
@@ -354,7 +357,7 @@ class Main {
 
     var t = 0;
     var healed = 0;
-    function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease) {
+    function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease, bonus_crit) {
         healed = 0;
         t = 0;
         int += get_option('buff int');
@@ -365,7 +368,7 @@ class Main {
         var manatide_interval_timer = manatide_interval_timer_max;
         var manatide_on = false;
         var manaspring_on = true;
-        var crit = get_option('talent crit') + Std.int(int / 60);
+        var crit = get_option('talent crit') + Std.int(int / 60) + bonus_crit;
         var heal_amount = get_option('heal amount');
         var heal_cost = get_option('heal cost');
         var cast_time = get_option('cast time');
@@ -471,6 +474,7 @@ class Main {
     // make it work in cpp
     // load file from sys
 
+    var last_mousewheel = -1;
     var exit_timer = 60;
     function update() {
         if (AUTO_EXIT) {
@@ -480,14 +484,18 @@ class Main {
             }
         }
 
-        if (Input.pressed(Key.UP)) {
-            scroll_index--;
+        if (last_mousewheel == -1) {
+            last_mousewheel = Mouse.mousewheel;
+        }
+        var d_mousewheel = Mouse.mousewheel - last_mousewheel;
+        if (Input.pressed(Key.UP) || d_mousewheel > 0) {
+            scroll_index -= 2;
             if (scroll_index < 0) {
                 scroll_index = 0;
             }
         }
-        if (Input.pressed(Key.DOWN)) {
-            scroll_index++;
+        if (Input.pressed(Key.DOWN) || d_mousewheel < 0) {
+            scroll_index += 2;
             if (scroll_index > output_array.length - 20) {
                 scroll_index = output_array.length - 20;
             }

@@ -1,9 +1,11 @@
-//to ignore [] formatting, otherwise just not having brackets is fine
+// start line with "//" to ignore [] formatting
+otherwise just not having '[]' in the line is fine
 //["name" type=item_type int=int_amount mp5=mp5_amount hsp=hsp_amount]
 //["big_sword" type=weapon int=5 mp5=3]
 not neccessary to write stats that are zero
 duplicates will be ignored, last one will be recorded
-types:(case insensitive)
+
+gear types:(case insensitive)
 Head
 Neck
 Shoulder
@@ -19,7 +21,7 @@ Weapon
 Offhand
 
 stats:
-int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from use)
+int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from use) +crit
 
 
 OPTIONS:
