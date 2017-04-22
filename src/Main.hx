@@ -47,7 +47,6 @@ class Main {
     "hsp",
     "+mana",
     "-cost",
-    "+crit",
     ];
 
     var options = new Map<String, Int>();
@@ -120,7 +119,6 @@ class Main {
             }
             find_option('base mana');
             find_option('base int');
-            find_option('talent crit');
             find_option('heal amount');
             find_option('heal cost');
             find_option('buff int');
@@ -224,7 +222,6 @@ class Main {
             var mp5 = 0 + 8 + 8;//oil and nightfin
             var cost_decrease = 0;
             var base_int = get_option('base int');
-            var bonus_crit = 0;
 
             for (type in types) {
                 var item = items[type][permutation_indices[type]];
@@ -233,11 +230,10 @@ class Main {
                 mp5 += item.stats["mp5"];
                 hsp += item.stats["hsp"];
                 cost_decrease += item.stats["-cost"];
-                bonus_crit += item.stats["+crit"];
             }
 
             // Simulate
-            simulate(added_mana, base_int, int, mp5, hsp, cost_decrease, bonus_crit);
+            simulate(added_mana, base_int, int, mp5, hsp, cost_decrease);
             var result_healed = healed;
             var result_t = t;
 
@@ -357,7 +353,7 @@ class Main {
 
     var t = 0;
     var healed = 0;
-    function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease, bonus_crit) {
+    function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease) {
         healed = 0;
         t = 0;
         int += get_option('buff int');
@@ -368,7 +364,6 @@ class Main {
         var manatide_interval_timer = manatide_interval_timer_max;
         var manatide_on = false;
         var manaspring_on = true;
-        var crit = get_option('talent crit') + Std.int(int / 60) + bonus_crit;
         var heal_amount = get_option('heal amount');
         var heal_cost = get_option('heal cost');
         var cast_time = get_option('cast time');
@@ -421,8 +416,7 @@ class Main {
                 mana += cost_decrease;
                 cast_timer = cast_time + cast_delay;
                 // extra 75% from 2 chain heal jumps
-                // n% casts will be critical and heal 150% the regular amount
-                healed_this_cast = Std.int((heal_amount + hsp) * (1 + crit / 100 * 0.5));
+                healed_this_cast = heal_amount + hsp;
                 if (chain_heal) {
                     healed_this_cast = Std.int(healed_this_cast * 1.75);
                 }
