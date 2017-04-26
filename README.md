@@ -1,5 +1,5 @@
 Gear calculator for vanilla restoration shaman.
-Made specifically for healing 5min+ raid boss fights. 
+Made specifically for healing raid boss fights. 
 Goes through all the permutations of your gear and prints permutations with top healed amounts.
 
 
