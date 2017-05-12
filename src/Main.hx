@@ -131,6 +131,7 @@ class Main {
             find_option('heal is chained');
             find_option('time limit');
             find_option('tides');
+            find_option('use manaspring');
 
 
             // item lines must have [ and ]
@@ -338,11 +339,8 @@ class Main {
         trace(output_string);
     }
 
-    static var tide_cost = 54;
-    static var spring_cost = 90;
-
-    static var manatide_length = 30;
-    static var manatide_interval_timer_max = 60;
+    static var manatide_cost = 45;
+    static var manaspring_cost = 90;
     static var manatide_tick = 290;
     static var manaspring_tick = 12;
 
@@ -361,22 +359,19 @@ class Main {
         var mana = get_option('base mana') + Std.int(int * 15.75);
         var cast_timer = 0;
         var manatide_timer = 0;
-        var manatide_interval_timer = manatide_interval_timer_max;
-        var manatide_on = false;
-        var manaspring_on = true;
         var heal_amount = get_option('heal amount');
         var heal_cost = get_option('heal cost');
         var cast_time = get_option('cast time');
         var cast_delay = get_option('cast delay');
-        var tide_amount = get_option('tides');
-        var used_potion = false;
         var chain_heal = get_option('heal is chained') == 1;
         var time_limit = get_option('time limit');
         var tides = get_option('tides');
+        var use_manaspring = get_option('use manaspring') == 1;
         if (time_limit <= 0) {
-            time_limit = 60 * 60;
+            time_limit = 10 * 60;
         }
 
+        var casts = 0;
         var healed_this_cast = 0;
 
         stats_mana = mana;
@@ -384,34 +379,19 @@ class Main {
         stats_hsp = hsp;
         stats_cost = cost_decrease;
 
+        // apply mana tides
+        mana += (4 * manatide_tick - manatide_cost + cost_decrease) * get_option('tides');
+        mana += get_option('mana potion');
+
         while (true) {
             t++;
             // trace(t);
             // trace(mana);
             cast_timer--;
-            if (manatide_on) {
-                manatide_timer--;
-                if (manatide_timer < 0) {
-                    manatide_on = false;
-                    manaspring_on = true;
-                }
-            } else {
-                if (tide_amount > 0) {
-                    manatide_interval_timer--;
-                    if (manatide_interval_timer <= 0) {
-                        manatide_interval_timer = manatide_interval_timer_max;
-                        tide_amount--;
-                        manatide_on = true;
-                        manaspring_on = false;
-                        manatide_timer = manatide_length;
-                        mana -= tide_cost;
-                        mana += cost_decrease;
-                    }
-                }
-            }
 
-            // Cast chain heal
-            if (cast_timer <= 0) {
+            // Cast heal
+            if (cast_timer < 0) {
+                casts++;
                 mana -= heal_cost;
                 mana += cost_decrease;
                 cast_timer = cast_time + cast_delay;
@@ -428,19 +408,15 @@ class Main {
                 mana += mp5;
             }
 
-
-
-            // Manatide/manaspring
-            if (manatide_on && t % 3 == 0) {
-                mana += manatide_tick;
-            } else if (manaspring_on && t % 2 == 0) {
-                mana += manaspring_tick;
-            }
-
-            // actual duration is 60s, but there are 2 tides and you need to offset that
-            if (t % 70 == 0) { 
-                mana -= spring_cost;
-                mana += cost_decrease;
+            // Manaspring
+            if (use_manaspring) {
+                if (t % 2 == 0) {
+                    mana += manaspring_tick;
+                }
+                if (t % 70 == 0) { 
+                    mana -= manaspring_cost;
+                    mana += cost_decrease;
+                }
             }
 
 
@@ -454,10 +430,6 @@ class Main {
             }
             // mana cap
             if (mana <= 0) {
-                if (!used_potion) {
-                    mana += get_option('mana potion');
-                    used_potion = true;
-                }
                 if (mana <= 0) {
                     return;
                 }

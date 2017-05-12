@@ -26,8 +26,9 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3   how many top results are recorded
-time limit = 360    put 0 to turn off
+time limit = 0    put 0 to turn off
 tides = 1  number of tide totems to drop(1 for 3min fight, 2 for 4+min)
+use manaspring = 1
 base mana = 2640
 base int = 85
 buff int = 60 any int from buffs/consumables
@@ -36,19 +37,22 @@ heal amount = 375   average of numbers in tooltip
 heal cost = 247      after talents but without item effects
 heal is chained = 1   if 1, apply 75% bonus from the chain
 cast time = 3       no floating points, sorry!
-cast delay = 1
+cast delay = 0
 mana potion = 1800  potion used once when reaching 0 mana, put 0 if you're a slacker
 
 Head:
 ["Crown of the Penitent" type=Head int=20 mp5=6]
 ["Tribal War Feathers" type=Head int=15 hsp=33 +mana=150]
+//["Helm of the Lifegiver" type=Head int=30 hsp=42 +mana=150]
 
 Neck:
-["Tooth of Gnarr" type=Neck int=15]
+["Gemstone Shard" type=Neck int=10]
+//["Choker of the Fire Lord" type=Neck int=7 hsp=34]
 
 Shoulder:
 ["Denwatcher's Shoulders" type=Shoulder int=10 hsp=18]
 ["Living Shoulders" type=Shoulder hsp=29]
+//["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
 
 Back:
 ["Hide of the Wild" type=Back int=10 hsp=42]
@@ -61,8 +65,11 @@ Wrists:
 
 Weapon/Offhand:
 ["Hammer of Grace" type=Weapon hsp=29]
+//["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=25]
+
 ["Brightly Glowing Stone" type=Offhand hsp=33]
 ["Gizlock's Hypertech Buckler" type=Offhand int=10 mp5=4]
+//["Malistar's Defender" type=Offhand int=12 mp5=9]
 
 Hands:
 ["Harmonious Gauntlets" type=Hands int=5 hsp=46]
@@ -72,6 +79,7 @@ Belt:
 
 Legs:
 ["Padre's Trousers" type=Legs int=20 mp5=6 hsp=42]
+//["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=51]
 
 Feet:
 ["Merciful Greaves" type=Feet int=14 hsp=20]
@@ -80,11 +88,11 @@ Rings:
 ["Fordring's Seal" type=Finger hsp=33]
 ["Emerald Flame Ring" type=Finger int=12 hsp=15]
 ["Ring of Demonic Guile" type=Finger int=10 mp5=6]
-//["Ring of Demonic Guile 2" type=Finger int=10 mp5=6]
+//["Cauterizing Band" type=Finger int=12 hsp=46]
 
 Trinkets:
 ["Second Wind" type=Trinket +mana=300 hsp=20]
-["Briarwood Reed" type=Trinket hsp=22]
+["Royal Seal of Eldre'Thalas" type=Trinket hsp=23]
 //["Mindtap1" type=Trinket mp5=11]
-//["Mindtap2" type=Trinket mp5=11]
+//["Shard of the Scale" type=Trinket mp5=16]
 
