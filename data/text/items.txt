@@ -1,5 +1,4 @@
-// start line with "//" to ignore [] formatting
-otherwise just not having '[]' in the line is fine
+// start line with "//" to ignore [] formatting otherwise just not having '[]' in the line is fine
 //["name" type=item_type int=int_amount mp5=mp5_amount hsp=hsp_amount]
 //["big_sword" type=weapon int=5 mp5=3]
 not neccessary to write stats that are zero
@@ -21,37 +20,35 @@ Weapon
 Offhand
 
 stats:
-int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from use)
-
+int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from use), tier (tier number of the item for bonus calculation)
 
 OPTIONS:
-record number = 3   how many top results are recorded
-time limit = 0    put 0 to turn off
-tides = 1  number of tide totems to drop(1 for 3min fight, 2 for 4+min)
+record number = 3
+time limit = 160
+tides = 1
 use manaspring = 1
 base mana = 2640
 base int = 85
-buff int = 60 any int from buffs/consumables
-buff mp5 = 8 any mp5 from consumables
-heal amount = 375   average of numbers in tooltip
-heal cost = 247      after talents but without item effects
-heal is chained = 1   if 1, apply 75% bonus from the chain
-cast time = 3       no floating points, sorry!
+buff int = 60
+buff mp5 = 8
+heal amount = 649
+heal cost = 384
+heal is chained = 1
+cast time = 3
 cast delay = 0
-mana potion = 1800  potion used once when reaching 0 mana, put 0 if you're a slacker
+mana pots = 3000  pot + rune
 
 Head:
-["Crown of the Penitent" type=Head int=20 mp5=6]
-["Tribal War Feathers" type=Head int=15 hsp=33 +mana=150]
 //["Helm of the Lifegiver" type=Head int=30 hsp=42 +mana=150]
+["Earthfury Helmet" type=Head int=23 mp5=6 hsp=30 tier=1]
+// +8 ench
 
 Neck:
-["Gemstone Shard" type=Neck int=10]
+["Tempest Talisman" type=Neck int=7]
 //["Choker of the Fire Lord" type=Neck int=7 hsp=34]
 
 Shoulder:
-["Denwatcher's Shoulders" type=Shoulder int=10 hsp=18]
-["Living Shoulders" type=Shoulder hsp=29]
+["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
 //["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
 
 Back:
@@ -59,30 +56,28 @@ Back:
 
 Chest:
 ["Red Dragonscale Breastplate" type=Chest hsp=59]
+//["Earthfury Vestments" type=Chest int=27 hsp=22 tier=1]
 
 Wrists:
 ["Loomguard Armbraces" type=Wrist int=7 hsp=30]
-
-Weapon/Offhand:
-["Hammer of Grace" type=Weapon hsp=29]
-//["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=25]
-
-["Brightly Glowing Stone" type=Offhand hsp=33]
-["Gizlock's Hypertech Buckler" type=Offhand int=10 mp5=4]
-//["Malistar's Defender" type=Offhand int=12 mp5=9]
+//["Earthfury Bracers" type=Wrist int=17 hsp=6 tier=1]
 
 Hands:
 ["Harmonious Gauntlets" type=Hands int=5 hsp=46]
+//["Earthfury Gauntlets" type=Hands int=13 hsp=9 tier=1]
 
 Belt:
 ["Whipvine Cord" type=Waist int=9 mp5=6 hsp=31]
+["Earthfury Belt" type=Waist int=21 mp5=4 hsp=18 tier=1]
 
 Legs:
-["Padre's Trousers" type=Legs int=20 mp5=6 hsp=42]
+["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
+// +8 ench
+["Earthfury Legguards" type=Legs int=19 mp5=6 hsp=12 tier=1]
 //["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=51]
 
 Feet:
-["Merciful Greaves" type=Feet int=14 hsp=20]
+["Earthfury Boots" type=Feet int=10 hsp=18 tier=1]
 
 Rings:
 ["Fordring's Seal" type=Finger hsp=33]
@@ -93,6 +88,13 @@ Rings:
 Trinkets:
 ["Second Wind" type=Trinket +mana=300 hsp=20]
 ["Royal Seal of Eldre'Thalas" type=Trinket hsp=23]
-//["Mindtap1" type=Trinket mp5=11]
+["Mindtap Talisman" type=Trinket mp5=11]
 //["Shard of the Scale" type=Trinket mp5=16]
+
+Weapon/Offhand:
+["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=25]
+
+["Brightly Glowing Stone" type=Offhand hsp=33]
+["Gizlock's Hypertech Buckler" type=Offhand int=10 mp5=4]
+//["Malistar's Defender" type=Offhand int=12 mp5=9]
 

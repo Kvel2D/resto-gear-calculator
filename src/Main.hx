@@ -1,3 +1,4 @@
+
 import haxegon.*;
 import haxe.ds.Vector;
 import flash.system.System;
@@ -47,6 +48,7 @@ class Main {
     "hsp",
     "+mana",
     "-cost",
+    "tier",
     ];
 
     var options = new Map<String, Int>();
@@ -124,7 +126,7 @@ class Main {
             find_option('buff int');
             find_option('buff mp5');
             find_option('cast delay');
-            find_option('mana potion');
+            find_option('mana pots');
             find_option('record number');
             find_option('cast time');
             find_option('tides');
@@ -220,9 +222,10 @@ class Main {
             var added_mana = 0;
             var int = 0;
             var hsp = 0;
-            var mp5 = 0 + 8 + 8;//oil and nightfin
-            var cost_decrease = 0;
+            var mp5 = 0;
             var base_int = get_option('base int');
+            var tier1 = 0;
+            var tier2 = 0;
 
             for (type in types) {
                 var item = items[type][permutation_indices[type]];
@@ -230,11 +233,16 @@ class Main {
                 int += item.stats["int"];
                 mp5 += item.stats["mp5"];
                 hsp += item.stats["hsp"];
-                cost_decrease += item.stats["-cost"];
+
+                if (item.stats["tier"] == 1) {
+                    tier1++;
+                } else if (item.stats["tier"] == 2) {
+                    tier2++;
+                }
             }
 
             // Simulate
-            simulate(added_mana, base_int, int, mp5, hsp, cost_decrease);
+            simulate(added_mana, base_int, int, mp5, hsp, tier1, tier2);
             var result_healed = healed;
             var result_t = t;
 
@@ -268,7 +276,15 @@ class Main {
                             perm.push(permutation_indices[type]);
                         }
                         top_perm[i] = perm;
-                        top_stats[i] = 'mana=${stats_mana} mp5=${stats_mp5} hsp=${stats_hsp} -cost=${stats_cost}';
+                        top_stats[i] = 'mana=${stats_mana} mp5=${stats_mp5} hsp=${stats_hsp}';
+                        if (tier1 >= 8) {
+                            top_stats[i] += " (t1 8/8 bonus)";
+                        } else if (tier1 >= 5) {
+                            top_stats[i] += " (t1 5/8 bonus)";
+                        }
+                        if (tier2 >= 3) {
+                            top_stats[i] += " (t2 3/8 bonus)";
+                        }
                         break;
                     }
                 }
@@ -347,11 +363,10 @@ class Main {
     static var stats_mana = 0;
     static var stats_mp5 = 0;
     static var stats_hsp = 0;
-    static var stats_cost = 0;
 
     var t = 0;
     var healed = 0;
-    function simulate(added_mana, base_int, int, mp5, hsp, cost_decrease) {
+    function simulate(added_mana, base_int, int, mp5, hsp, tier1, tier2) {
         healed = 0;
         t = 0;
         int += get_option('buff int');
@@ -366,6 +381,9 @@ class Main {
         var chain_heal = get_option('heal is chained') == 1;
         var time_limit = get_option('time limit');
         var tides = get_option('tides');
+        var t1_5 = (tier1 >= 5);
+        var t1_8 = (tier1 >= 8);
+        var t2_3 = (tier1 >= 3);
         var use_manaspring = get_option('use manaspring') == 1;
         if (time_limit <= 0) {
             time_limit = 10 * 60;
@@ -377,11 +395,10 @@ class Main {
         stats_mana = mana;
         stats_mp5 = mp5;
         stats_hsp = hsp;
-        stats_cost = cost_decrease;
 
         // apply mana tides
-        mana += (4 * manatide_tick - manatide_cost + cost_decrease) * get_option('tides');
-        mana += get_option('mana potion');
+        mana += (4 * manatide_tick - manatide_cost) * get_option('tides');
+        mana += get_option('mana pots');
 
         while (true) {
             t++;
@@ -393,11 +410,19 @@ class Main {
             if (cast_timer < 0) {
                 casts++;
                 mana -= heal_cost;
-                mana += cost_decrease;
+                if (t1_5 && !chain_heal) {
+                    mana += Std.int(heal_cost * 0.25 * 0.35);
+                }
                 cast_timer = cast_time + cast_delay;
                 // extra 75% from 2 chain heal jumps
                 healed_this_cast = heal_amount + hsp;
                 if (chain_heal) {
+                    if (t2_3) {
+                        healed_this_cast = Std.int(healed_this_cast * 1.975);
+                    } else {
+                        healed_this_cast = Std.int(healed_this_cast * 1.75);
+                    }
+                } else if (t1_8) {
                     healed_this_cast = Std.int(healed_this_cast * 1.75);
                 }
                 healed += healed_this_cast;
@@ -415,7 +440,6 @@ class Main {
                 }
                 if (t % 70 == 0) { 
                     mana -= manaspring_cost;
-                    mana += cost_decrease;
                 }
             }
 
