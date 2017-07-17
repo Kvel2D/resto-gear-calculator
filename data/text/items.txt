@@ -24,22 +24,19 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3
-time limit = 160
+time limit = 240
 tides = 1
 use manaspring = 1
 base mana = 2640
-base int = 85
 buff int = 60
 buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-cast time = 3
-cast delay = 0
-mana pots = 3000  pot + rune
+mana pots = 6000  2 x (pot + rune)
 
 Head:
-//["Helm of the Lifegiver" type=Head int=30 hsp=42 +mana=150]
+//["Helm of the Lifegiver" type=Head int=30 hsp=42]
 ["Earthfury Helmet" type=Head int=23 mp5=6 hsp=30 tier=1]
 // +8 ench
 
@@ -49,7 +46,7 @@ Neck:
 
 Shoulder:
 ["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
-//["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
+["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
 
 Back:
 ["Hide of the Wild" type=Back int=10 hsp=42]

@@ -47,7 +47,6 @@ class Main {
     "mp5",
     "hsp",
     "+mana",
-    "-cost",
     "tier",
     ];
 
@@ -61,16 +60,10 @@ class Main {
         }
     }
 
-    var items = new Map<String, Array<Item>>();
-    var permutation_indices = new Map<String, Int>();
-    var permutation_indices_max = new Map<String, Int>();
-
-
     var top_perm: Vector<Array<Int>>;
     var top_healed: Vector<Int>;
     var top_t: Vector<Int>;
     var top_stats: Vector<String>;
-    var record_number = 0;
 
     var output_array = new Array<String>();
     var output_colors = new Array<Int>();
@@ -79,20 +72,16 @@ class Main {
 
     function new() {
         Gfx.resize_screen(screen_width, screen_height);
-
-
         var items_file = Data.load_text("items");
-
         calculate(items_file);
     }
-
 
     function calculate(items_file: Array<String>) {
 
         options = new Map<String, Int>();
-        items = new Map<String, Array<Item>>();
-        permutation_indices = new Map<String, Int>();
-        permutation_indices_max = new Map<String, Int>();
+        var items = new Map<String, Array<Item>>();
+        var permutation_indices = new Map<String, Int>();
+        var permutation_indices_max = new Map<String, Int>();
 
         for (type in types) {
             items[type] = new Array<Item>();
@@ -119,21 +108,17 @@ class Main {
                     }
                 }
             }
-            find_option('base mana');
-            find_option('base int');
-            find_option('heal amount');
-            find_option('heal cost');
-            find_option('buff int');
-            find_option('buff mp5');
-            find_option('cast delay');
-            find_option('mana pots');
             find_option('record number');
-            find_option('cast time');
-            find_option('tides');
-            find_option('heal is chained');
             find_option('time limit');
             find_option('tides');
             find_option('use manaspring');
+            find_option('base mana');
+            find_option('buff int');
+            find_option('buff mp5');
+            find_option('heal amount');
+            find_option('heal cost');
+            find_option('heal is chained');
+            find_option('mana pots');
 
 
             // item lines must have [ and ]
@@ -190,7 +175,7 @@ class Main {
         }
 
 
-        record_number = get_option('record number');
+        var record_number = get_option('record number');
         top_perm = new Vector<Array<Int>>(record_number);
         top_healed = new Vector<Int>(record_number);
         top_t = new Vector<Int>(record_number);
@@ -210,7 +195,7 @@ class Main {
             for (type in types) {
                 for (item in items[type]) {
                     trace('${item.name} has int=${item.stats["int"]} mp5=${item.stats["mp5"]} 
-                        hsp=${item.stats["hsp"]} -cost=${item.stats["-cost"]} +mana=${item.stats["+mana"]}');
+                        hsp=${item.stats["hsp"]} +mana=${item.stats["+mana"]}');
                 }
             }
         }
@@ -220,10 +205,9 @@ class Main {
         while (true) {
 
             var added_mana = 0;
-            var int = 0;
+            var int = get_option('buff int');
             var hsp = 0;
-            var mp5 = 0;
-            var base_int = get_option('base int');
+            var mp5 = get_option('buff mp5');
             var tier1 = 0;
             var tier2 = 0;
 
@@ -241,10 +225,28 @@ class Main {
                 }
             }
 
+            var mana = get_option('base mana') + Std.int(int * 15.75) + added_mana;
+
             // Simulate
-            simulate(added_mana, base_int, int, mp5, hsp, tier1, tier2);
+            // Try cast delays from 0 to 2, find the delay that produces
+            // time which is as close as possible to the limit and has highest healed amount
+            var time_limit = get_option('time limit');
+            for (i in 0...8) {
+                simulate(mana, mp5, hsp, tier1, tier2, i * 0.5);
+                var bigger_delay_healed = healed;
+                var bigger_delay_t = t;
+                var bigger_delay = i * 0.5;
+
+                // See if previous delay performed better
+                if (t >= time_limit) {
+                    if (i > 0) {
+                        simulate(mana, mp5, hsp, tier1, tier2, (i - 1) * 0.5);
+                    }
+                    break;
+                }
+            }
             var result_healed = healed;
-            var result_t = t;
+            var result_t = Std.int(t);
 
             // Check if new record
             // don't duplicate rings/trinkets
@@ -352,39 +354,35 @@ class Main {
                 }
             }
         }
-        trace(output_string);
     }
 
-    static var manatide_cost = 45;
-    static var manaspring_cost = 90;
-    static var manatide_tick = 290;
-    static var manaspring_tick = 12;
+    static inline var manatide_cost = 45;
+    static inline var manaspring_cost = 90;
+    static inline var manatide_tick = 290;
+    static inline var manaspring_tick = 12;
 
     static var stats_mana = 0;
     static var stats_mp5 = 0;
     static var stats_hsp = 0;
 
-    var t = 0;
+    var t: Float = 0;
     var healed = 0;
-    function simulate(added_mana, base_int, int, mp5, hsp, tier1, tier2) {
+    function simulate(mana, mp5, hsp, tier1, tier2, cast_delay) {
         healed = 0;
         t = 0;
-        int += get_option('buff int');
-        mp5 += get_option('buff mp5');
-        var mana = get_option('base mana') + Std.int(int * 15.75);
-        var cast_timer = 0;
-        var manatide_timer = 0;
-        var heal_amount = get_option('heal amount');
-        var heal_cost = get_option('heal cost');
-        var cast_time = get_option('cast time');
-        var cast_delay = get_option('cast delay');
-        var chain_heal = get_option('heal is chained') == 1;
+        var cast_timer: Float = 0;
+
         var time_limit = get_option('time limit');
         var tides = get_option('tides');
+        var use_manaspring = get_option('use manaspring') == 1;
+        var heal_amount = get_option('heal amount');
+        var heal_cost = get_option('heal cost');
+        var cast_time = 2.5;
+        var chain_heal = get_option('heal is chained') == 1;
+
         var t1_5 = (tier1 >= 5);
         var t1_8 = (tier1 >= 8);
         var t2_3 = (tier1 >= 3);
-        var use_manaspring = get_option('use manaspring') == 1;
         if (time_limit <= 0) {
             time_limit = 10 * 60;
         }
@@ -401,10 +399,10 @@ class Main {
         mana += get_option('mana pots');
 
         while (true) {
-            t++;
+            t += 0.5;
             // trace(t);
             // trace(mana);
-            cast_timer--;
+            cast_timer -= 0.5;
 
             // Cast heal
             if (cast_timer < 0) {
@@ -429,25 +427,22 @@ class Main {
             }
 
             // Apply mp5
-            if (t % 5 == 0) {
+            if (Math.abs(t) % 5 < 0.1) {
                 mana += mp5;
             }
 
             // Manaspring
             if (use_manaspring) {
-                if (t % 2 == 0) {
+                if (Math.abs(t) % 2 < 0.1) {
                     mana += manaspring_tick;
                 }
-                if (t % 70 == 0) { 
+                if (Math.abs(t) % 70 < 0.1) { 
                     mana -= manaspring_cost;
                 }
             }
 
 
-            // hard cap at 20min if something goes wrong
-            if (t >= 20 * 60) {
-                return;
-            }
+            // Caps
             // time limit cap
             if (t > time_limit) {
                 return;
@@ -458,11 +453,12 @@ class Main {
                     return;
                 }
             }
+            // hard cap at 20min if something goes wrong
+            if (t >= 20 * 60) {
+                return;
+            }
         }
     }
-
-    // make it work in cpp
-    // load file from sys
 
     var last_mousewheel = -1;
     var exit_timer = 60;
@@ -500,6 +496,9 @@ class Main {
             }
         }
 
-        GUI.text_button(0, 0, "Recalculate", function() { var items_file = Data.load_text("items"); calculate(items_file); });
+        GUI.text_button(0, 0, "Recalculate", function() { 
+            var items_file = Data.load_text("items"); 
+            calculate(items_file); 
+        });
     }
 }

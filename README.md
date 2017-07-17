@@ -1,5 +1,4 @@
-Gear calculator for vanilla restoration shaman.
-Made specifically for healing raid boss fights. 
+Gear calculator for restoration shaman in Vanilla WoW.
 Goes through all the permutations of your gear and prints permutations with top healed amounts.
 
 
