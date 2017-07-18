@@ -24,7 +24,7 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3
-time = 400
+time limit = 100
 tides = 1
 use manaspring = 1
 base mana = 2640

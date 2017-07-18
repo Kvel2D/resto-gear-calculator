@@ -134,7 +134,7 @@ class Main {
                 }
             }
             find_option('record number');
-            find_option('time');
+            find_option('time limit');
             find_option('tides');
             find_option('use manaspring');
             find_option('base mana');
@@ -200,7 +200,7 @@ class Main {
         }
 
         record_number = get_option('record number');
-        time = get_option('time');
+        time = get_option('time limit');
         if (time <= 0) {
             time = 10 * 60; // unlimited time, default to 10min
         }
@@ -208,7 +208,7 @@ class Main {
         use_manaspring = get_option('use manaspring') == 1;
         base_mana = get_option('base mana');
         buff_int = get_option('buff int');
-        buff_mp5 = get_option('buff mp5');
+        buff_mp5 = get_option('buff mp5'); 
         heal_amount = get_option('heal amount');
         heal_cost = get_option('heal cost');
         heal_is_chained = get_option('heal is chained') == 1;
