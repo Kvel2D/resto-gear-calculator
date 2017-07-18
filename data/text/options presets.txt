@@ -5,14 +5,11 @@ time limit = 160
 tides = 1
 use manaspring = 1
 base mana = 2640
-base int = 85
 buff int = 60
 buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-cast time = 3
-cast delay = 0
 mana pots = 3000  pot + rune
 
 LONG FIGHT USING CH3 (>3min)
@@ -22,14 +19,11 @@ time limit = 240
 tides = 1
 use manaspring = 1
 base mana = 2640
-base int = 85
 buff int = 60
 buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-cast time = 3
-cast delay = 1
 mana pots = 6000  2 x (pot + rune)
 
 LONG FIGHT USING HW7
@@ -39,14 +33,11 @@ time limit = 240
 tides = 1
 use manaspring = 1
 base mana = 2640
-base int = 85
 buff int = 60
 buff mp5 = 8
 heal amount = 877
 heal cost = 323
 heal is chained = 0
-cast time = 3
-cast delay = 1
 mana pots = 3000  pot + rune
 
 

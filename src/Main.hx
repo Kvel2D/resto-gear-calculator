@@ -15,14 +15,19 @@ class Item {
     function new() {}
 }
 
+enum State {
+    State_None;
+    State_Pre;
+    State_Display;
+}
+
 @:publicFields
 class Main {
     static inline var DEBUG = false;
-    static inline var AUTO_EXIT = false;
 
     static inline var screen_width = 1000;
     static inline var screen_height = 1000;
-    
+
     var types = [
     "head",
     "neck",
@@ -60,28 +65,48 @@ class Main {
         }
     }
 
-    var top_perm: Vector<Array<Int>>;
-    var top_healed: Vector<Int>;
-    var top_t: Vector<Int>;
-    var top_stats: Vector<String>;
+    var items = new Map<String, Array<Item>>();
+    var permutation_indices = new Map<String, Int>();
 
     var output_array = new Array<String>();
     var output_colors = new Array<Int>();
     var output_string = "";
     var scroll_index = 0;
 
+    var record_number = 0;
+    var time = 0;
+    var tides = 0;
+    var use_manaspring = false;
+    var base_mana = 0;
+    var buff_int = 0;
+    var buff_mp5 = 0;
+    var heal_amount = 0;
+    var heal_cost = 0;
+    var heal_is_chained = false;
+    var mana_pots = 0;
+    var cast_time = 0.0;
+
+    var number_of_items = 0;
+    static inline var alot_of_items = 25;
+
+    var state = State_None;
+    static inline var pre_duration = 10;
+    var state_timer = 0;
+
     function new() {
         Gfx.resize_screen(screen_width, screen_height);
-        var items_file = Data.load_text("items");
-        calculate(items_file);
+        load_items();
+        state = State_Pre;
+        state_timer = pre_duration;
     }
 
-    function calculate(items_file: Array<String>) {
+    function load_items() {
+        number_of_items = 0;
 
+        var items_file = Data.load_text("items");
         options = new Map<String, Int>();
-        var items = new Map<String, Array<Item>>();
-        var permutation_indices = new Map<String, Int>();
-        var permutation_indices_max = new Map<String, Int>();
+        items = new Map<String, Array<Item>>();
+        permutation_indices = new Map<String, Int>();
 
         for (type in types) {
             items[type] = new Array<Item>();
@@ -109,7 +134,7 @@ class Main {
                 }
             }
             find_option('record number');
-            find_option('time limit');
+            find_option('time');
             find_option('tides');
             find_option('use manaspring');
             find_option('base mana');
@@ -120,13 +145,13 @@ class Main {
             find_option('heal is chained');
             find_option('mana pots');
 
-
             // item lines must have [ and ]
             if (line.indexOf('[') == -1 || line.indexOf(']') == -1) {
                 continue;
             }
 
             var item = new Item();
+            number_of_items++;
 
             var name_start = line.indexOf("\"") + 1;
             var name_end = line.substr(name_start).indexOf("\"");
@@ -174,22 +199,20 @@ class Main {
             }
         }
 
-
-        var record_number = get_option('record number');
-        top_perm = new Vector<Array<Int>>(record_number);
-        top_healed = new Vector<Int>(record_number);
-        top_t = new Vector<Int>(record_number);
-        top_stats = new Vector<String>(record_number);
-        for (i in 0...top_perm.length) {
-            top_perm[i] = new Array<Int>();
-            top_healed[i] = 0;
+        record_number = get_option('record number');
+        time = get_option('time');
+        if (time <= 0) {
+            time = 10 * 60; // unlimited time, default to 10min
         }
-
-
-        for (type in types) {
-            permutation_indices_max[type] = items[type].length;
-        }
-
+        tides = get_option('tides');
+        use_manaspring = get_option('use manaspring') == 1;
+        base_mana = get_option('base mana');
+        buff_int = get_option('buff int');
+        buff_mp5 = get_option('buff mp5');
+        heal_amount = get_option('heal amount');
+        heal_cost = get_option('heal cost');
+        heal_is_chained = get_option('heal is chained') == 1;
+        mana_pots = get_option('mana pots');
 
         if (DEBUG) {
             for (type in types) {
@@ -200,68 +223,78 @@ class Main {
             }
         }
 
+        state = State_Pre;
+        state_timer = pre_duration;
+    }
+
+    function calculate() {
+        var top_perm = new Vector<Array<Int>>(record_number);
+        var top_healed = new Vector<Int>(record_number);
+        var top_t = new Vector<Int>(record_number);
+        var top_stats = new Vector<String>(record_number);
+        for (i in 0...top_perm.length) {
+            top_perm[i] = new Array<Int>();
+            top_healed[i] = 0;
+        }
 
         // Go through every item permutation
         while (true) {
 
-            var added_mana = 0;
-            var int = get_option('buff int');
-            var hsp = 0;
-            var mp5 = get_option('buff mp5');
-            var tier1 = 0;
-            var tier2 = 0;
-
-            for (type in types) {
-                var item = items[type][permutation_indices[type]];
-                added_mana += item.stats["+mana"];
-                int += item.stats["int"];
-                mp5 += item.stats["mp5"];
-                hsp += item.stats["hsp"];
-
-                if (item.stats["tier"] == 1) {
-                    tier1++;
-                } else if (item.stats["tier"] == 2) {
-                    tier2++;
-                }
-            }
-
-            var mana = get_option('base mana') + Std.int(int * 15.75) + added_mana;
-
-            // Simulate
-            // Try cast delays from 0 to 2, find the delay that produces
-            // time which is as close as possible to the limit and has highest healed amount
-            var time_limit = get_option('time limit');
-            for (i in 0...8) {
-                simulate(mana, mp5, hsp, tier1, tier2, i * 0.5);
-                var bigger_delay_healed = healed;
-                var bigger_delay_t = t;
-                var bigger_delay = i * 0.5;
-
-                // See if previous delay performed better
-                if (t >= time_limit) {
-                    if (i > 0) {
-                        simulate(mana, mp5, hsp, tier1, tier2, (i - 1) * 0.5);
-                    }
-                    break;
-                }
-            }
-            var result_healed = healed;
-            var result_t = Std.int(t);
-
-            // Check if new record
             // don't duplicate rings/trinkets
             var duplicate_finger_or_trinket = 
             permutation_indices["finger1"] == permutation_indices["finger2"]
             || permutation_indices["trinket1"] == permutation_indices["trinket2"];
 
             if (!duplicate_finger_or_trinket) {
+                var added_mana = 0;
+                var int = buff_int;
+                var hsp = 0;
+                var mp5 = buff_mp5;
+                var tier1 = 0;
+                var tier2 = 0;
+
+                for (type in types) {
+                    var item = items[type][permutation_indices[type]];
+                    added_mana += item.stats["+mana"];
+                    int += item.stats["int"];
+                    mp5 += item.stats["mp5"];
+                    hsp += item.stats["hsp"];
+
+                    if (item.stats["tier"] == 1) {
+                        tier1++;
+                    } else if (item.stats["tier"] == 2) {
+                        tier2++;
+                    }
+                }
+
+                var mana = base_mana + Std.int(int * 15.75) + added_mana;
+
+                // Simulate
+                // Try cast delays from 0 to 3, find the delay that produces
+                // time which is as close as possible to the limit and has highest healed amount
+                var cast_delay: Float;
+                for (i in 0...9) { 
+                    cast_delay = i * 0.5;
+                    simulate(mana, mp5, hsp, tier1, tier2, cast_delay);
+                    var bigger_delay_healed = healed;
+                    var bigger_delay_t = t;
+                    var bigger_delay = i * 0.5;
+
+                    // See if previous delay performed better
+                    if (t >= time) {
+                        if (i > 0) {
+                            simulate(mana, mp5, hsp, tier1, tier2, cast_delay - 0.5);
+                        }
+                        break;
+                    }
+                }
                 for (i in 0...top_healed.length) {
                     // don't add permutations with same healed
-                    if (result_healed == top_healed[i]) {
+                    if (healed == top_healed[i]) {
                         break;
                     }
 
-                    if (result_healed > top_healed[i]) {
+                    if (healed > top_healed[i]) {
                         // shift down
                         var j = top_healed.length - 1;
                         while (j > i) {
@@ -271,8 +304,8 @@ class Main {
                             top_stats[j] = top_stats[j - 1];
                             j--;
                         }
-                        top_healed[i] = result_healed;
-                        top_t[i] = result_t;
+                        top_healed[i] = healed;
+                        top_t[i] = Std.int(t);
                         var perm = new Array<Int>();
                         for (type in types) {
                             perm.push(permutation_indices[type]);
@@ -295,7 +328,7 @@ class Main {
             // Done when all indices are max
             var done = true;
             for (type in types) {
-                if (permutation_indices[type] < permutation_indices_max[type] - 1) {
+                if (permutation_indices[type] < items[type].length - 1) {
                     done = false;
                     break;
                 }
@@ -310,20 +343,15 @@ class Main {
             while (while_loop) {
                 while_loop = false;
 
-                // var str = "";
-                // for (type in types) {
-                //     str += permutation_indices[type];
-                // }
-                // trace(str);
-
                 permutation_indices[types[i]]++;
-                if (permutation_indices[types[i]] >= permutation_indices_max[types[i]]) {
+                if (permutation_indices[types[i]] > items[types[i]].length - 1) {
                     permutation_indices[types[i]] = 0;
                     i++;
                     while_loop = true;
                 }
             }
         }
+
 
         function output(line) {
             output_array.push(line);
@@ -372,20 +400,9 @@ class Main {
         t = 0;
         var cast_timer: Float = 0;
 
-        var time_limit = get_option('time limit');
-        var tides = get_option('tides');
-        var use_manaspring = get_option('use manaspring') == 1;
-        var heal_amount = get_option('heal amount');
-        var heal_cost = get_option('heal cost');
-        var cast_time = 2.5;
-        var chain_heal = get_option('heal is chained') == 1;
-
         var t1_5 = (tier1 >= 5);
         var t1_8 = (tier1 >= 8);
         var t2_3 = (tier1 >= 3);
-        if (time_limit <= 0) {
-            time_limit = 10 * 60;
-        }
 
         var casts = 0;
         var healed_this_cast = 0;
@@ -395,8 +412,8 @@ class Main {
         stats_hsp = hsp;
 
         // apply mana tides
-        mana += (4 * manatide_tick - manatide_cost) * get_option('tides');
-        mana += get_option('mana pots');
+        mana += (4 * manatide_tick - manatide_cost) * tides;
+        mana += mana_pots;
 
         while (true) {
             t += 0.5;
@@ -408,13 +425,13 @@ class Main {
             if (cast_timer < 0) {
                 casts++;
                 mana -= heal_cost;
-                if (t1_5 && !chain_heal) {
+                if (t1_5 && !heal_is_chained) {
                     mana += Std.int(heal_cost * 0.25 * 0.35);
                 }
                 cast_timer = cast_time + cast_delay;
                 // extra 75% from 2 chain heal jumps
                 healed_this_cast = heal_amount + hsp;
-                if (chain_heal) {
+                if (heal_is_chained) {
                     if (t2_3) {
                         healed_this_cast = Std.int(healed_this_cast * 1.975);
                     } else {
@@ -444,7 +461,7 @@ class Main {
 
             // Caps
             // time limit cap
-            if (t > time_limit) {
+            if (t > time) {
                 return;
             }
             // mana cap
@@ -460,15 +477,21 @@ class Main {
         }
     }
 
-    var last_mousewheel = -1;
-    var exit_timer = 60;
-    function update() {
-        if (AUTO_EXIT) {
-            exit_timer--;
-            if (exit_timer <= 0) {
-                System.exit(0);
-            }
+    function update_pre() {
+        if (number_of_items > alot_of_items) {
+            Text.display(0, 0, 'Processing $number_of_items items, this will take a while\n
+                (<25 items recommended)', Col.WHITE);
         }
+
+        state_timer--;
+        if (state_timer < 0) {
+            calculate();
+            state = State_Display;
+        }
+    }
+
+    var last_mousewheel = -1;
+    function update_display() {
 
         if (last_mousewheel == -1) {
             last_mousewheel = Mouse.mousewheel;
@@ -497,8 +520,17 @@ class Main {
         }
 
         GUI.text_button(0, 0, "Recalculate", function() { 
-            var items_file = Data.load_text("items"); 
-            calculate(items_file); 
+            load_items();
+            state = State_Pre;
+            state_timer = pre_duration;
         });
+    }
+
+    function update() {
+        switch (state) {
+            case State_Pre: update_pre();
+            case State_Display: update_display();
+            default:
+        }
     }
 }

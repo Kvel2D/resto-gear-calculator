@@ -24,28 +24,27 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3
-time limit = 240
+time = 400
 tides = 1
 use manaspring = 1
 base mana = 2640
 buff int = 60
 buff mp5 = 8
-heal amount = 649
-heal cost = 384
-heal is chained = 1
-mana pots = 6000  2 x (pot + rune)
+heal amount = 877
+heal cost = 323
+heal is chained = 0
+mana pots = 3000  pot + rune
 
 Head:
-//["Helm of the Lifegiver" type=Head int=30 hsp=42]
+["Helm of the Lifegiver" type=Head int=30 hsp=50]
 ["Earthfury Helmet" type=Head int=23 mp5=6 hsp=30 tier=1]
-// +8 ench
 
 Neck:
-["Tempest Talisman" type=Neck int=7]
-//["Choker of the Fire Lord" type=Neck int=7 hsp=34]
+["Frostwolf Advisor's Pendant" type=Neck int=10 mp5=4]
+["Animated Chain Necklace" type=Neck hsp=33]
 
 Shoulder:
-["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
+//["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
 ["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
 
 Back:
@@ -57,41 +56,41 @@ Chest:
 
 Wrists:
 ["Loomguard Armbraces" type=Wrist int=7 hsp=30]
-//["Earthfury Bracers" type=Wrist int=17 hsp=6 tier=1]
+["Earthfury Bracers" type=Wrist int=17 hsp=6 tier=1]
 
 Hands:
 ["Harmonious Gauntlets" type=Hands int=5 hsp=46]
-//["Earthfury Gauntlets" type=Hands int=13 hsp=9 tier=1]
+["Earthfury Gauntlets" type=Hands int=13 hsp=9 tier=1]
 
 Belt:
 ["Whipvine Cord" type=Waist int=9 mp5=6 hsp=31]
-["Earthfury Belt" type=Waist int=21 mp5=4 hsp=18 tier=1]
+//["Earthfury Belt" type=Waist int=21 mp5=4 hsp=18 tier=1]
+["Corehound Belt" type=Waist int=16 hsp=62]
 
 Legs:
-["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
-// +8 ench
-["Earthfury Legguards" type=Legs int=19 mp5=6 hsp=12 tier=1]
-//["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=51]
+//["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
+//["Earthfury Legguards" type=Legs int=19 mp5=6 hsp=20 tier=1]
+["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=59]
 
 Feet:
 ["Earthfury Boots" type=Feet int=10 hsp=18 tier=1]
 
 Rings:
 ["Fordring's Seal" type=Finger hsp=33]
-["Emerald Flame Ring" type=Finger int=12 hsp=15]
+//["Emerald Flame Ring" type=Finger int=12 hsp=15]
 ["Ring of Demonic Guile" type=Finger int=10 mp5=6]
-//["Cauterizing Band" type=Finger int=12 hsp=46]
+["Cauterizing Band" type=Finger int=12 hsp=46]
 
 Trinkets:
-["Second Wind" type=Trinket +mana=300 hsp=20]
+//["Second Wind" type=Trinket +mana=300 hsp=20]
 ["Royal Seal of Eldre'Thalas" type=Trinket hsp=23]
 ["Mindtap Talisman" type=Trinket mp5=11]
-//["Shard of the Scale" type=Trinket mp5=16]
+["Shard of the Scale" type=Trinket mp5=16]
 
 Weapon/Offhand:
-["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=25]
+["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=80]
 
 ["Brightly Glowing Stone" type=Offhand hsp=33]
-["Gizlock's Hypertech Buckler" type=Offhand int=10 mp5=4]
-//["Malistar's Defender" type=Offhand int=12 mp5=9]
+["Malistar's Defender" type=Offhand int=12 mp5=9]
+["Lei of the Lifegiver" type=Offhand mp5=3 hsp=53]
 
