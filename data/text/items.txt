@@ -44,7 +44,7 @@ Neck:
 ["Animated Chain Necklace" type=Neck hsp=33]
 
 Shoulder:
-//["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
+["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
 ["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
 
 Back:
@@ -56,11 +56,11 @@ Chest:
 
 Wrists:
 ["Loomguard Armbraces" type=Wrist int=7 hsp=30]
-["Earthfury Bracers" type=Wrist int=17 hsp=6 tier=1]
+//["Earthfury Bracers" type=Wrist int=17 hsp=6 tier=1]
 
 Hands:
 ["Harmonious Gauntlets" type=Hands int=5 hsp=46]
-["Earthfury Gauntlets" type=Hands int=13 hsp=9 tier=1]
+//["Earthfury Gauntlets" type=Hands int=13 hsp=9 tier=1]
 
 Belt:
 ["Whipvine Cord" type=Waist int=9 mp5=6 hsp=31]
@@ -68,7 +68,7 @@ Belt:
 ["Corehound Belt" type=Waist int=16 hsp=62]
 
 Legs:
-//["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
+["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
 //["Earthfury Legguards" type=Legs int=19 mp5=6 hsp=20 tier=1]
 ["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=59]
 
