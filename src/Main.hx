@@ -433,8 +433,13 @@ class Main {
                 healed_this_cast = heal_amount + hsp;
                 if (heal_is_chained) {
                     if (t2_3) {
-                        healed_this_cast = Std.int(healed_this_cast * 1.975);
+                        // 1.0 + 0.65 + 0.4= 2.05
+                        // second jump gets the bonus of the first jump, source:
+                        // http://elitistjerks.com:80/f31/t19181-shaman_how_heal_like_pro/
+                        // April 2008 onarchive.org
+                        healed_this_cast = Std.int(healed_this_cast * 2.0725);
                     } else {
+                        // 1.0 + 0.5 + 0.25 = 1.75
                         healed_this_cast = Std.int(healed_this_cast * 1.75);
                     }
                 } else if (t1_8) {
