@@ -218,7 +218,7 @@ class Main {
             for (type in types) {
                 for (item in items[type]) {
                     trace('${item.name} has int=${item.stats["int"]} mp5=${item.stats["mp5"]} 
-                        hsp=${item.stats["hsp"]} +mana=${item.stats["+mana"]}');
+                        hsp=${item.stats["hsp"]} +mana=${item.stats["+mana"]} tier=${item.stats["tier"]}');
                 }
             }
         }
@@ -402,7 +402,7 @@ class Main {
 
         var t1_5 = (tier1 >= 5);
         var t1_8 = (tier1 >= 8);
-        var t2_3 = (tier1 >= 3);
+        var t2_3 = (tier2 >= 3);
 
         var casts = 0;
         var healed_this_cast = 0;
@@ -442,7 +442,7 @@ class Main {
                         // 1.0 + 0.5 + 0.25 = 1.75
                         healed_this_cast = Std.int(healed_this_cast * 1.75);
                     }
-                } else if (t1_8) {
+                } else if (t1_8 && !heal_is_chained) {
                     healed_this_cast = Std.int(healed_this_cast * 1.75);
                 }
                 healed += healed_this_cast;
