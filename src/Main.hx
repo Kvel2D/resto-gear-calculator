@@ -405,7 +405,7 @@ class Main {
         var t2_3 = (tier2 >= 3);
 
         var casts = 0;
-        var healed_this_cast = 0;
+        var healed_this_cast = 0.0;
 
         stats_mana = mana;
         stats_mp5 = mp5;
@@ -429,23 +429,30 @@ class Main {
                     mana += Std.int(heal_cost * 0.25 * 0.35);
                 }
                 cast_timer = cast_time + cast_delay;
-                // extra 75% from 2 chain heal jumps
-                healed_this_cast = heal_amount + hsp;
+
+                // spell power coefficients http://wowwiki.wikia.com/wiki/Spell_power_coefficient?oldid=783150
                 if (heal_is_chained) {
+                    // 71.430% coefficient for Chain Heal first hit
+                    healed_this_cast = heal_amount + hsp * 0.7143;
                     if (t2_3) {
-                        // 1.0 + 0.65 + 0.4= 2.05
+                        // 1.0 + 0.65 + 0.4 = 2.05
                         // second jump gets the bonus of the first jump, source:
                         // http://elitistjerks.com:80/f31/t19181-shaman_how_heal_like_pro/
                         // April 2008 onarchive.org
-                        healed_this_cast = Std.int(healed_this_cast * 2.0725);
+                        healed_this_cast = healed_this_cast * 2.0725;
                     } else {
                         // 1.0 + 0.5 + 0.25 = 1.75
-                        healed_this_cast = Std.int(healed_this_cast * 1.75);
+                        healed_this_cast = healed_this_cast * 1.75;
                     }
-                } else if (t1_8 && !heal_is_chained) {
-                    healed_this_cast = Std.int(healed_this_cast * 1.75);
+                } else {
+                    // 85.71% coefficient for Healing Wave
+                    healed_this_cast = heal_amount + hsp * 0.8571;
+                    if (t1_8) {
+                        // t1 8/8 bonus adds one 0.2 jump and one 0.04 jump
+                        healed_this_cast = healed_this_cast * 1.24;
+                    }
                 }
-                healed += healed_this_cast;
+                healed += Std.int(healed_this_cast);
             }
 
             // Apply mp5

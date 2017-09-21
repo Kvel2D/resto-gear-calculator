@@ -24,7 +24,7 @@ int, mp5, hsp, -cost(aquementas), +mana(trinkets use - total mana gotten from us
 
 OPTIONS:
 record number = 3
-time limit = 150
+time limit = 240
 tides = 1
 use manaspring = 1
 base mana = 2640
@@ -33,11 +33,11 @@ buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-mana pots = 3000  pot + rune
+mana pots = 4000
 
 Head:
 ["Earthfury Helmet" type=Head int=23 mp5=6 hsp=30 tier=1]
-["Helmet of Ten Storms" type=Head int=24 hsp=35 tier=2]
+//["Helmet of Ten Storms" type=Head int=24 hsp=35 tier=2]
 //["Helm of the Lifegiver" type=Head int=30 hsp=50]
 
 Neck:
@@ -46,20 +46,20 @@ Neck:
 Shoulder:
 ["Earthfury Epaulets" type=Shoulder int=18 mp5=4 hsp=18 tier=1]
 ["Wild Growth Spaulders" type=Shoulder int=12 hsp=62]
-["Epaulets of Ten Storms" type=Shoulder int=17 hsp=31 tier=2]
+//["Epaulets of Ten Storms" type=Shoulder int=17 hsp=31 tier=2]
 
 Back:
 ["Hide of the Wild" type=Back int=10 hsp=42]
-//["Shroud of Pure Thought" type=Back int=11 mp5=6 hsp=33]
+["Shroud of Pure Thought" type=Back int=11 mp5=6 hsp=33]
 
 Chest:
-//["Red Dragonscale Breastplate" type=Chest hsp=59]
+["Red Dragonscale Breastplate" type=Chest hsp=59]
 //["Earthfury Vestments" type=Chest int=27 hsp=22 tier=1]
-["Vestments of Ten Storms" type=Chest int=31 hsp=44 tier=2]
+//["Vestments of Ten Storms" type=Chest int=31 hsp=44 tier=2]
 
 Wrists:
 ["Loomguard Armbraces" type=Wrist int=7 hsp=57]
-//["Bracers of Ten Storms" type=Wrist int=16 mp5=6 tier=2]
+["Bracers of Ten Storms" type=Wrist int=16 mp5=6 tier=2]
 
 Hands:
 ["Harmonious Gauntlets" type=Hands int=5 hsp=46]
@@ -68,33 +68,29 @@ Hands:
 Belt:
 ["Corehound Belt" type=Waist int=16 hsp=62]
 //["Belt of Ten Storms" type=Waist int=18 hsp=26 tier=2]
-//["Earthfury Belt" type=Waist int=21 mp5=4 hsp=18 tier=1]
+["Earthfury Belt" type=Waist int=21 mp5=4 hsp=18 tier=1]
 
 Legs:
-//["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
-//["Legplates of Ten Storms" type=Legs int=18 hsp=29 tier=2]
+["Padre's Trousers" type=Legs int=20 mp5=6 hsp=50]
+["Legplates of Ten Storms" type=Legs int=18 hsp=29 tier=2]
 //["Earthfury Legguards" type=Legs int=19 mp5=6 hsp=20 tier=1]
-["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=59]
-//["Manastorm Leggings" type=Legs int=14 mp5=14]
+//["Salamander Scale Pants" type=Legs int=14 mp5=9 hsp=59]
 
 Feet:
 ["Earthfury Boots" type=Feet int=10 hsp=18 tier=1]
-//["Greaves of Ten Storms" type=Feet int=16 hsp=20 tier=2]
-//["Shimmering Geta" type=Feet int=17 mp5=12]
-["Boots of Pure Thought" type=Feet int=12 hsp=62]
+["Greaves of Ten Storms" type=Feet int=16 hsp=20 tier=2]
+//["Boots of Pure Thought" type=Feet int=12 hsp=62]
 
 Rings:
-//["Fordring's Seal" type=Finger int=5 hsp=37]
-//["Emerald Flame Ring" type=Finger int=12 hsp=15]
-//["Ring of Demonic Guile" type=Finger int=10 mp5=6]
-["Cauterizing Band" type=Finger int=12 hsp=46]
-["Ring of Blackrock" type=Finger mp5=9 hsp=19]
+["Fordring's Seal" type=Finger int=5 hsp=37]
+["Emerald Flame Ring" type=Finger int=12 hsp=15]
+//["Cauterizing Band" type=Finger int=12 hsp=46]
 
 Trinkets:
-//["Royal Seal of Eldre'Thalas" type=Trinket hsp=23]
-//["Mindtap Talisman" type=Trinket mp5=11]
+["Briarwood Reed" type=Trinket hsp=29]
+["Mindtap Talisman" type=Trinket mp5=11]
 ["Shard of the Scale" type=Trinket mp5=16]
-["Rejuvenating Gem" type=Trinket mp5=9 hsp=66]
+//["Rejuvenating Gem" type=Trinket mp5=9 hsp=66]
 
 Weapon/Offhand:
 ["Aurastone Hammer" type=Weapon int=10 mp5=5 hsp=80]

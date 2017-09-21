@@ -10,7 +10,7 @@ buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-mana pots = 3000  pot + rune
+mana pots = 2000  pot + rune
 
 LONG FIGHT USING CH3 (>3min)
 OPTIONS:
@@ -24,7 +24,7 @@ buff mp5 = 8
 heal amount = 649
 heal cost = 384
 heal is chained = 1
-mana pots = 6000  2 x (pot + rune)
+mana pots = 4000  2 x (pot + rune)
 
 LONG FIGHT USING HW7
 OPTIONS:
@@ -38,7 +38,7 @@ buff mp5 = 8
 heal amount = 877
 heal cost = 323
 heal is chained = 0
-mana pots = 3000  pot + rune
+mana pots = 2000  pot + rune
 
 
 
